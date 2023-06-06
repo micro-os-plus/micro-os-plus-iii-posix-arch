@@ -26,7 +26,7 @@
 # https://cmake.org/cmake/help/v3.20/
 cmake_minimum_required(VERSION 3.20)
 
-project(micro-os-plus-posix-arch
+project(micro-os-plus-iii-posix-arch
   DESCRIPTION "µOS++ synthetic POSIX port"
 )
 
@@ -38,41 +38,41 @@ endif()
 # -----------------------------------------------------------------------------
 ## The project library definitions ##
 
-add_library(micro-os-plus-posix-arch-interface INTERFACE EXCLUDE_FROM_ALL)
+add_library(micro-os-plus-iii-posix-arch-interface INTERFACE EXCLUDE_FROM_ALL)
 
 # -----------------------------------------------------------------------------
 # Target settings.
 
-target_include_directories(micro-os-plus-posix-arch-interface INTERFACE
+target_include_directories(micro-os-plus-iii-posix-arch-interface INTERFACE
   "include"
 )
 
-target_sources(micro-os-plus-posix-arch-interface INTERFACE
+target_sources(micro-os-plus-iii-posix-arch-interface INTERFACE
   src/diag/trace-posix.cpp
   src/rtos/os-core.cpp
 )
 
-target_compile_definitions(micro-os-plus-posix-arch-interface INTERFACE
+target_compile_definitions(micro-os-plus-iii-posix-arch-interface INTERFACE
   # None.
 )
 
-target_compile_options(micro-os-plus-posix-arch-interface INTERFACE
+target_compile_options(micro-os-plus-iii-posix-arch-interface INTERFACE
   # None.
 )
 
-target_link_libraries(micro-os-plus-posix-arch-interface INTERFACE
+target_link_libraries(micro-os-plus-iii-posix-arch-interface INTERFACE
   # None.
 )
 
 if (COMMAND xpack_display_target_lists)
-  xpack_display_target_lists(micro-os-plus-posix-arch-interface)
+  xpack_display_target_lists(micro-os-plus-iii-posix-arch-interface)
 endif()
 
 # -----------------------------------------------------------------------------
 # Aliases.
 
 # https://cmake.org/cmake/help/v3.20/command/add_library.html#alias-libraries
-add_library(micro-os-plus::posix-arch ALIAS micro-os-plus-posix-arch-interface)
-message(VERBOSE "> micro-os-plus::posix-arch -> micro-os-plus-posix-arch-interface")
+add_library(micro-os-plus::iii-posix-arch ALIAS micro-os-plus-iii-posix-arch-interface)
+message(VERBOSE "> micro-os-plus::iii-posix-arch -> micro-os-plus-iii-posix-arch-interface")
 
 # -----------------------------------------------------------------------------

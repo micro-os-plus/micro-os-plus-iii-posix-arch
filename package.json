@@ -1,7 +1,7 @@
 {
-  "name": "@micro-os-plus/posix-arch",
-  "version": "0.1.1",
-  "description": "A source xPack with µOS++ POSIX synthetic port",
+  "name": "@micro-os-plus/micro-os-plus-iii-posix-arch",
+  "version": "1.0.0-pre.1",
+  "description": "A source code library with the µOS++ POSIX synthetic port",
   "main": "",
   "scripts": {
     "npm-install": "npm install",
@@ -13,11 +13,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/micro-os-plus/posix-arch.git"
+    "url": "https://github.com/micro-os-plus/micro-os-plus-iii-posix-arch.git"
   },
-  "homepage": "https://github.com/micro-os-plus/posix-arch",
+  "homepage": "https://github.com/micro-os-plus/micro-os-plus-iii-posix-arch",
   "bugs": {
-    "url": "https://github.com/micro-os-plus/posix-arch/issues"
+    "url": "https://github.com/micro-os-plus/micro-os-plus-iii-posix-arch/issues"
   },
   "keywords": [
     "xpack",
