@@ -151,7 +151,7 @@ target_link_libraries(your-target PRIVATE
 
 ### Known problems
 
-- none
+The scheduler code does not run on Apple Silicon (SegFault).
 
 #### Limitations
 
