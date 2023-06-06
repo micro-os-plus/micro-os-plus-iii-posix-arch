@@ -71,12 +71,24 @@
 
 #ifdef  __cplusplus
 
+// ----------------------------------------------------------------------------
+
 #include <signal.h>
 // Platform definitions
 #include <sys/time.h>
 
 #include <cstdint>
 #include <cstddef>
+
+// ----------------------------------------------------------------------------
+
+#pragma GCC diagnostic push
+
+#if defined(__clang__)
+#pragma clang diagnostic ignored "-Wc++98-compat"
+#endif
+
+// ----------------------------------------------------------------------------
 
 namespace os
 {
@@ -152,8 +164,12 @@ namespace os
   } /* namespace rtos */
 } /* namespace os */
 
+#pragma GCC diagnostic pop
+
 // ----------------------------------------------------------------------------
 
 #endif /* __cplusplus */
+
+// ----------------------------------------------------------------------------
 
 #endif /* CMSIS_PLUS_RTOS_PORT_OS_DECLS_H_ */

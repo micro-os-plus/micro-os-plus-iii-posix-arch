@@ -47,6 +47,8 @@
 
 #ifdef  __cplusplus
 
+// ----------------------------------------------------------------------------
+
 #include <stdlib.h>
 #include <string.h>
 #include <sys/utsname.h>
@@ -57,8 +59,16 @@
 
 #include <cmsis-plus/diag/trace.h>
 
+// ----------------------------------------------------------------------------
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
+
+#if defined(__clang__)
+#pragma clang diagnostic ignored "-Wc++98-compat"
+#endif
+
+// ----------------------------------------------------------------------------
 
 extern "C" uint32_t signal_nesting;
 
@@ -207,5 +217,7 @@ namespace os
 // ----------------------------------------------------------------------------
 
 #endif /* __cplusplus */
+
+// ----------------------------------------------------------------------------
 
 #endif /* CMSIS_PLUS_RTOS_PORT_OS_INLINES_H_ */

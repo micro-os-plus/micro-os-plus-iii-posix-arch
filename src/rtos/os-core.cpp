@@ -36,6 +36,14 @@
 
 #include <sys/time.h>
 
+// ----------------------------------------------------------------------------
+
+#if defined(__clang__)
+#pragma clang diagnostic ignored "-Wc++98-compat"
+#endif
+
+// ----------------------------------------------------------------------------
+
 uint32_t signal_nesting;
 
 namespace os
@@ -85,7 +93,13 @@ namespace os
 #if defined(OS_TRACE_RTOS_THREAD_CONTEXT)
         trace::printf ("port::context::%s() makecontext %p\n", __func__, ctx);
 #endif
+
+#pragma GCC diagnostic push
+#if defined(__clang__)
+#pragma clang diagnostic ignored "-Wc++98-compat-pedantic"
+#endif
         makecontext (ctx, reinterpret_cast<func_t> (func), 1, args);
+#pragma GCC diagnostic pop
 
         // context->port_.saved = false;
       }
