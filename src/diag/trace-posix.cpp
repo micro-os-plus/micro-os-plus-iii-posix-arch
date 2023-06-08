@@ -56,9 +56,13 @@ namespace os
     write (const void* buf, std::size_t nbyte)
     {
 #if defined(OS_USE_TRACE_POSIX_STDOUT)
-      return ::write (1, buf, nbyte); // Forward to STDOUT.
+      ssize_t ret = ::write (1, buf, nbyte); // Forward to STDOUT.
+      // sync(); // Fails to change contexts!
+      return ret;
 #elif defined(OS_USE_TRACE_POSIX_STDERR)
-      return ::write (2, buf, nbyte); // Forward to STDERR.
+      ssize_t ret = ::write (2, buf, nbyte); // Forward to STDERR.
+      // sync(); // Fails to change contexts!
+      return ret;
 #else
 #warning "No trace output channel."
       buf = buf;
