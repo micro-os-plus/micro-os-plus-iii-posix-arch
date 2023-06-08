@@ -60,8 +60,8 @@ namespace os
       void
       context::create (void* context, void* func, void* args)
       {
-        class rtos::thread::context* th_ctx =
-            static_cast<class rtos::thread::context*> (context);
+        /* class */ rtos::thread::context* th_ctx =
+            static_cast</* class */rtos::thread::context*> (context);
         memset (&th_ctx->port_, 0, sizeof(th_ctx->port_));
 
 #pragma GCC diagnostic push
@@ -385,7 +385,7 @@ namespace os
           }
 
         // set timer
-        struct itimerval tv;
+        /* struct */ itimerval tv;
         // first clear all fields
 #if defined(__APPLE__)
         memset (&tv, 0, sizeof(tv));
@@ -440,7 +440,7 @@ namespace os
       uint64_t
       get_current_micros (void)
       {
-        struct timeval tp;
+        /* struct */ timeval tp;
         gettimeofday (&tp, nullptr);
 
         return static_cast<uint64_t> (tp.tv_sec * 1000000 + tp.tv_usec);

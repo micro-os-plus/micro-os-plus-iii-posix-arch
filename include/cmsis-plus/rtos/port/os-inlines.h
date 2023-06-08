@@ -87,7 +87,7 @@ namespace os
         __attribute__((always_inline))
         greeting (void)
         {
-          struct utsname name;
+          /* struct */ utsname name;
           if (::uname (&name) != -1)
             {
               trace::printf ("POSIX synthetic, running on %s %s %s",
