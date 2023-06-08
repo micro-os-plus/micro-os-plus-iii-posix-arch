@@ -207,7 +207,6 @@ namespace os
         __attribute__((always_inline))
         prepare_suspend (void)
         {
-          ;
         }
 
       } /* namespace this_thread */

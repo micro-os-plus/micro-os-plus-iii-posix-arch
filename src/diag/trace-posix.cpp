@@ -47,7 +47,7 @@ namespace os
     void
     initialize (void)
     {
-      ; // For POSIX no inits are required.
+      // For POSIX no inits are required.
     }
 
     // ------------------------------------------------------------------------
