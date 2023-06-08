@@ -148,7 +148,7 @@ namespace os
 
       namespace clock
       {
-        constexpr int signal_number = SIGALRM;
+        constexpr unsigned int signal_number = SIGALRM;
       } /* namespace clock */
 
       using thread_context_t = struct thread_context_s
