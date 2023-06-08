@@ -159,7 +159,10 @@ namespace os
           sigset_t old;
           sigprocmask (SIG_BLOCK, &clock_set, &old);
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsign-conversion"
           return sigismember(&old, clock::signal_number);
+#pragma GCC diagnostic pop
         }
 
         // Exit an IRQ critical section
@@ -180,7 +183,10 @@ namespace os
           sigset_t old;
           sigprocmask (SIG_UNBLOCK, &clock_set, &old);
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsign-conversion"
           return sigismember(&old, clock::signal_number);
+#pragma GCC diagnostic pop
         }
 
         // Exit an IRQ critical section

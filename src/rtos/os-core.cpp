@@ -64,8 +64,14 @@ namespace os
             static_cast<class rtos::thread::context*> (context);
         memset (&th_ctx->port_, 0, sizeof(th_ctx->port_));
 
+#pragma GCC diagnostic push
+#if defined(__clang__)
+#elif defined(__GNUC__)
+#pragma GCC diagnostic ignored "-Wuseless-cast"
+#endif
         ucontext_t* ctx =
             reinterpret_cast<ucontext_t*> (&(th_ctx->port_.ucontext));
+#pragma GCC diagnostic pop
 
 #if defined(OS_TRACE_RTOS_THREAD_CONTEXT)
         trace::printf ("port::context::%s() getcontext %p\n", __func__, ctx);
@@ -132,7 +138,14 @@ namespace os
 
           // Must be done before the first critical section.
           sigemptyset(&interrupts::clock_set);
+          
+#pragma GCC diagnostic push
+#if defined(__clang__)
+#elif defined(__GNUC__)
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+#endif
           sigaddset(&interrupts::clock_set, clock::signal_number);
+#pragma GCC diagnostic pop
 
           return result::ok;
         }
@@ -153,8 +166,14 @@ namespace os
                   rtos::scheduler::ready_threads_list_.unlink_head ();
             }
 
+#pragma GCC diagnostic push
+#if defined(__clang__)
+#elif defined(__GNUC__)
+#pragma GCC diagnostic ignored "-Wuseless-cast"
+#endif
           ucontext_t* new_context =
               reinterpret_cast<ucontext_t*> (&(rtos::scheduler::current_thread_->context_.port_.ucontext));
+#pragma GCC diagnostic pop
 
 #if defined(OS_TRACE_RTOS_THREAD_CONTEXT)
           trace::printf ("port::scheduler::%s() ctx %p %s\n", __func__,
@@ -235,13 +254,25 @@ namespace os
                              old_thread->name (), old_thread->state_, save);
 #endif
 
+#pragma GCC diagnostic push
+#if defined(__clang__)
+#elif defined(__GNUC__)
+#pragma GCC diagnostic ignored "-Wuseless-cast"
+#endif
               old_ctx =
                   reinterpret_cast<ucontext_t*> (&old_thread->context_.port_.ucontext);
+#pragma GCC diagnostic pop
 
               rtos::scheduler::internal_switch_threads ();
 
+#pragma GCC diagnostic push
+#if defined(__clang__)
+#elif defined(__GNUC__)
+#pragma GCC diagnostic ignored "-Wuseless-cast"
+#endif
               new_ctx =
                   reinterpret_cast<ucontext_t*> (&rtos::scheduler::current_thread_->context_.port_.ucontext);
+#pragma GCC diagnostic pop
             }
 
           if (old_ctx != new_ctx)
