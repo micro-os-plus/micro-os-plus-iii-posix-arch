@@ -83,24 +83,6 @@ namespace os
       namespace scheduler
       {
 
-        inline void
-        __attribute__((always_inline))
-        greeting (void)
-        {
-          /* struct */ utsname name;
-          if (::uname (&name) != -1)
-            {
-              trace::printf ("POSIX synthetic, running on %s %s %s",
-                             name.machine, name.sysname, name.release);
-            }
-          else
-            {
-              trace::printf ("POSIX synthetic");
-            }
-
-          trace::puts ("; non-preemptive.");
-        }
-
         inline port::scheduler::state_t
         __attribute__((always_inline))
         lock (void)
@@ -149,52 +131,6 @@ namespace os
         is_priority_valid (void)
         {
           return true;
-        }
-
-        // Enter an IRQ critical section
-        inline rtos::interrupts::state_t
-        __attribute__((always_inline))
-        critical_section::enter (void)
-        {
-          sigset_t old;
-          sigprocmask (SIG_BLOCK, &clock_set, &old);
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wsign-conversion"
-          return sigismember(&old, clock::signal_number);
-#pragma GCC diagnostic pop
-        }
-
-        // Exit an IRQ critical section
-        inline void
-        __attribute__((always_inline))
-        critical_section::exit (rtos::interrupts::state_t state)
-        {
-          sigprocmask (state ? SIG_BLOCK : SIG_UNBLOCK, &clock_set, nullptr);
-        }
-
-        // ====================================================================
-
-        // Enter an IRQ uncritical section
-        inline rtos::interrupts::state_t
-        __attribute__((always_inline))
-        uncritical_section::enter (void)
-        {
-          sigset_t old;
-          sigprocmask (SIG_UNBLOCK, &clock_set, &old);
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wsign-conversion"
-          return sigismember(&old, clock::signal_number);
-#pragma GCC diagnostic pop
-        }
-
-        // Exit an IRQ critical section
-        inline void
-        __attribute__((always_inline))
-        uncritical_section::exit (rtos::interrupts::state_t state)
-        {
-          sigprocmask (state ? SIG_BLOCK : SIG_UNBLOCK, &clock_set, nullptr);
         }
 
       } /* namespace interrupts */

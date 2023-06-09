@@ -116,7 +116,65 @@ namespace os
 
       namespace interrupts
       {
+        // --------------------------------------------------------------------
+
         sigset_t clock_set;
+
+        // --------------------------------------------------------------------
+
+        // Enter an IRQ critical section
+        rtos::interrupts::state_t
+        critical_section::enter (void)
+        {
+#if defined(OS_TRACE_RTOS_SCHEDULER)
+          trace::printf ("{c ");
+#endif
+          sigset_t old;
+          sigprocmask (SIG_BLOCK, &clock_set, &old);
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+          return sigismember(&old, clock::signal_number);
+#pragma GCC diagnostic pop
+        }
+
+        // Exit an IRQ critical section
+        void
+        critical_section::exit (rtos::interrupts::state_t state)
+        {
+#if defined(OS_TRACE_RTOS_SCHEDULER)
+          trace::printf (" c}");
+#endif
+          sigprocmask (state ? SIG_BLOCK : SIG_UNBLOCK, &clock_set, nullptr);
+        }
+
+        // ====================================================================
+
+        // Enter an IRQ uncritical section
+        rtos::interrupts::state_t
+        uncritical_section::enter (void)
+        {
+#if defined(OS_TRACE_RTOS_SCHEDULER)
+          trace::printf ("{u ");
+#endif
+          sigset_t old;
+          sigprocmask (SIG_UNBLOCK, &clock_set, &old);
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+          return sigismember(&old, clock::signal_number);
+#pragma GCC diagnostic pop
+        }
+
+        // Exit an IRQ critical section
+        void
+        uncritical_section::exit (rtos::interrupts::state_t state)
+        {
+#if defined(OS_TRACE_RTOS_SCHEDULER)
+          trace::printf (" u}");
+#endif
+          sigprocmask (state ? SIG_BLOCK : SIG_UNBLOCK, &clock_set, nullptr);
+        }
 
       } /* namespace interrupts */
 
@@ -131,6 +189,23 @@ namespace os
 
         // --------------------------------------------------------------------
 
+        void
+        greeting (void)
+        {
+          /* struct */ utsname name;
+          if (::uname (&name) != -1)
+            {
+              trace::printf ("POSIX synthetic, running on %s %s %s",
+                             name.machine, name.sysname, name.release);
+            }
+          else
+            {
+              trace::printf ("POSIX synthetic");
+            }
+
+          trace::puts ("; non-preemptive");
+        }
+
         result_t
         initialize (void)
         {
@@ -138,7 +213,7 @@ namespace os
 
           // Must be done before the first critical section.
           sigemptyset(&interrupts::clock_set);
-          
+
 #pragma GCC diagnostic push
 #if defined(__clang__)
 #elif defined(__GNUC__)
@@ -220,7 +295,7 @@ namespace os
               || rtos::interrupts::in_handler_mode ())
             {
 #if defined(OS_TRACE_RTOS_THREAD_CONTEXT)
-              trace::printf ("port::scheduler::%s() nop\n", __func__);
+              // trace::printf ("port::scheduler::%s() deny\n", __func__);
 #endif
               return;
             }
@@ -250,7 +325,7 @@ namespace os
                   save = true;
                 }
 #if defined(OS_TRACE_RTOS_THREAD_CONTEXT)
-              trace::printf ("port::scheduler::%s() old %s %d %d\n", __func__,
+              trace::printf ("port::scheduler::%s() from %s %d %d\n", __func__,
                              old_thread->name (), old_thread->state_, save);
 #endif
 
@@ -313,7 +388,7 @@ namespace os
           else
             {
 #if defined(OS_TRACE_RTOS_THREAD_CONTEXT)
-              trace::printf ("port::scheduler::%s() nop %s\n", __func__,
+              trace::printf ("port::scheduler::%s() same %s\n", __func__,
                              old_thread->name ());
 #endif
             }
@@ -330,6 +405,10 @@ namespace os
       static void
       systick_clock_signal_handler (int signum)
       {
+#if 1
+        trace::printf("{i ");
+#endif
+
         if (signum != clock::signal_number)
           {
             char ce = '?';
@@ -344,15 +423,13 @@ namespace os
             return;
           }
 
-#if 0
-        char c = '*';
-        write (1, &c, 1);
-#endif
-
         signal_nesting++;
         // Call the ticks timer ISR.
         os_systick_handler ();
         signal_nesting--;
+#if 1
+        trace::printf(" i}");
+#endif
       }
 
       // ======================================================================
