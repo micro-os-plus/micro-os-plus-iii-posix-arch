@@ -48,9 +48,9 @@
 #include <stdint.h>
 
 #if !defined (_XOPEN_SOURCE)
-#error This port requires defining _XOPEN_SOURCE=600L globally
+#error This port requires defining _XOPEN_SOURCE=600L or 700L globally
 #endif
-#include <ucontext.h>
+#include <libucontext/libucontext.h>
 
 #include <signal.h>
 #include <stdbool.h>
@@ -66,7 +66,7 @@ typedef uint64_t os_port_clock_offset_t;
 
 typedef struct
 {
-  ucontext_t ucontext; //
+  libucontext_ucontext_t ucontext; //
 } os_port_thread_context_t;
 
 typedef bool os_port_scheduler_state_t;
