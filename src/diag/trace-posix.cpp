@@ -35,6 +35,7 @@
 #include <cmsis-plus/diag/trace.h>
 #include <cstddef>
 #include <unistd.h>
+#include <stdio.h>
 
 // ----------------------------------------------------------------------------
 
@@ -62,6 +63,14 @@ namespace os
 #elif defined(OS_USE_TRACE_POSIX_STDERR)
       ssize_t ret = ::write (2, buf, nbyte); // Forward to STDERR.
       // sync(); // Fails to change contexts!
+      return ret;
+#elif defined(OS_USE_TRACE_POSIX_FWRITE_STDOUT)
+      // Forward to buffered file STDOUT.
+      ssize_t ret = static_cast<ssize_t>(::fwrite (buf, 1, nbyte, stdout));
+      return ret;
+#elif defined(OS_USE_TRACE_POSIX_FWRITE_STDERR)
+      // Forward to buffered file STDERR.
+      ssize_t ret = static_cast<ssize_t>(::fwrite (buf, 1, nbyte, stderr));
       return ret;
 #else
 #warning "No trace output channel."
