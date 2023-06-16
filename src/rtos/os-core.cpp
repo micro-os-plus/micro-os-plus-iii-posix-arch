@@ -77,7 +77,7 @@ namespace os
         trace::printf ("port::context::%s() getcontext %p\n", __func__, ctx);
 #endif
 
-        if (libucontext_getcontext (ctx) != 0)
+        if (libucontext_posix_getcontext (ctx) != 0)
           {
             trace::printf ("port::context::%s() getcontext failed with %s\n",
                            __func__, strerror (errno));
@@ -259,9 +259,9 @@ namespace os
           lock_state = state::init;
 
 #if defined NDEBUG
-          libucontext_setcontext (new_context);
+          libucontext_posix_setcontext (new_context);
 #else
-          int res = libucontext_setcontext (new_context);
+          int res = libucontext_posix_setcontext (new_context);
           assert(res == 0);
 #endif
           abort ();
@@ -360,7 +360,7 @@ namespace os
                       old_thread->name (),
                       rtos::scheduler::current_thread_->name ());
 #endif
-                  if (libucontext_swapcontext (old_ctx, new_ctx) != 0)
+                  if (libucontext_posix_swapcontext (old_ctx, new_ctx) != 0)
                     {
                       trace::printf (
                           "port::scheduler::%s() swapcontext failed with %s\n",
@@ -376,7 +376,7 @@ namespace os
                                  rtos::scheduler::current_thread_->name ());
 #endif
                   // context->port_.saved = false;
-                  if (libucontext_setcontext (new_ctx) != 0)
+                  if (libucontext_posix_setcontext (new_ctx) != 0)
                     {
                       trace::printf (
                           "port::scheduler::%s() setcontext failed with %s\n",
