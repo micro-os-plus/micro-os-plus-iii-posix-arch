@@ -61,7 +61,7 @@ cd my-project
 git init # Unless already a Git project
 mkdir -p xpacks
 
-git submodule add https://github.commicro-os-plus/micro-os-plus-iii-posix-arch.git \
+git submodule add https://github.com/micro-os-plus/micro-os-plus-iii-posix-arch.git \
   xpacks/@micro-os-plus/micro-os-plus-iii-posix-arch
 ```
 
