@@ -14,11 +14,11 @@
 
 # This file is intended to be consumed by applications with:
 #
-# `add_subdirectory("xpacks/@micro-os-plus/micro-os-plus-iii")`
+# `add_subdirectory("xpacks/@micro-os-plus/micro-os-plus-iii-posix-arch")`
 #
 # The result is an interface library that can be added to the linker with:
 #
-# `target_link_libraries(your-target PUBLIC micro-os-plus::micro-os-plus-iii)`
+# `target_link_libraries(your-target PUBLIC micro-os-plus::iii-posix-arch)`
 
 # -----------------------------------------------------------------------------
 ## Preamble ##
