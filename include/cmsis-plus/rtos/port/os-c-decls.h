@@ -50,7 +50,28 @@
 #if !defined (_XOPEN_SOURCE)
 #error This port requires defining _XOPEN_SOURCE=600L or 700L globally
 #endif
+
+#if defined(OS_INCLUDE_LIBUCONTEXT)
+
 #include <libucontext/libucontext.h>
+
+#define os_impl_ucontext_t libucontext_ucontext_t
+#define os_impl_getcontext libucontext_posix_getcontext
+#define os_impl_makecontext libucontext_makecontext
+#define os_impl_setcontext libucontext_posix_setcontext
+#define os_impl_swapcontext libucontext_posix_swapcontext
+
+#else
+
+#include <ucontext.h>
+
+#define os_impl_ucontext_t ucontext_t
+#define os_impl_getcontext getcontext
+#define os_impl_makecontext makecontext
+#define os_impl_setcontext setcontext
+#define os_impl_swapcontext swapcontext
+
+#endif // defined(OS_INCLUDE_LIBUCONTEXT)
 
 #include <signal.h>
 #include <stdbool.h>
@@ -66,7 +87,7 @@ typedef uint64_t os_port_clock_offset_t;
 
 typedef struct
 {
-  libucontext_ucontext_t ucontext; //
+  os_impl_ucontext_t ucontext; //
 } os_port_thread_context_t;
 
 typedef bool os_port_scheduler_state_t;

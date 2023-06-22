@@ -155,7 +155,7 @@ namespace os
         {
           // On POSIX, the context is saved on standard (although deprecated)
           // ucontext_t structures. It requires _XOPEN_SOURCE=700L to compile.
-          libucontext_ucontext_t ucontext;//
+          os_impl_ucontext_t ucontext;//
         };
 
     // ------------------------------------------------------------------------

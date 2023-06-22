@@ -69,15 +69,15 @@ namespace os
 #elif defined(__GNUC__)
 #pragma GCC diagnostic ignored "-Wuseless-cast"
 #endif
-        libucontext_ucontext_t* ctx =
-            reinterpret_cast<libucontext_ucontext_t*> (&(th_ctx->port_.ucontext));
+        os_impl_ucontext_t* ctx =
+            reinterpret_cast<os_impl_ucontext_t*> (&(th_ctx->port_.ucontext));
 #pragma GCC diagnostic pop
 
 #if defined(OS_TRACE_RTOS_THREAD_CONTEXT)
         trace::printf ("port::context::%s() getcontext %p\n", __func__, ctx);
 #endif
 
-        if (libucontext_posix_getcontext (ctx) != 0)
+        if (os_impl_getcontext (ctx) != 0)
           {
             trace::printf ("port::context::%s() getcontext failed with %s\n",
                            __func__, strerror (errno));
@@ -104,7 +104,7 @@ namespace os
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wc++98-compat-pedantic"
 #endif
-        libucontext_makecontext (ctx, reinterpret_cast<func_t> (func), 1, args);
+        os_impl_makecontext (ctx, reinterpret_cast<func_t> (func), 1, args);
 #pragma GCC diagnostic pop
 
         // context->port_.saved = false;
@@ -246,8 +246,8 @@ namespace os
 #elif defined(__GNUC__)
 #pragma GCC diagnostic ignored "-Wuseless-cast"
 #endif
-          libucontext_ucontext_t* new_context =
-              reinterpret_cast<libucontext_ucontext_t*> (&(rtos::scheduler::current_thread_->context_.port_.ucontext));
+          os_impl_ucontext_t* new_context =
+              reinterpret_cast<os_impl_ucontext_t*> (&(rtos::scheduler::current_thread_->context_.port_.ucontext));
 #pragma GCC diagnostic pop
 
 #if defined(OS_TRACE_RTOS_THREAD_CONTEXT)
@@ -259,9 +259,9 @@ namespace os
           lock_state = state::init;
 
 #if defined NDEBUG
-          libucontext_posix_setcontext (new_context);
+          os_impl_setcontext (new_context);
 #else
-          int res = libucontext_posix_setcontext (new_context);
+          int res = os_impl_setcontext (new_context);
           assert(res == 0);
 #endif
           abort ();
@@ -311,8 +311,8 @@ namespace os
 
           bool save = false;
           rtos::thread* old_thread;
-          libucontext_ucontext_t* old_ctx;
-          libucontext_ucontext_t* new_ctx;
+          os_impl_ucontext_t* old_ctx;
+          os_impl_ucontext_t* new_ctx;
 
             {
               rtos::interrupts::critical_section ics;
@@ -335,7 +335,7 @@ namespace os
 #pragma GCC diagnostic ignored "-Wuseless-cast"
 #endif
               old_ctx =
-                  reinterpret_cast<libucontext_ucontext_t*> (&old_thread->context_.port_.ucontext);
+                  reinterpret_cast<os_impl_ucontext_t*> (&old_thread->context_.port_.ucontext);
 #pragma GCC diagnostic pop
 
               rtos::scheduler::internal_switch_threads ();
@@ -346,7 +346,7 @@ namespace os
 #pragma GCC diagnostic ignored "-Wuseless-cast"
 #endif
               new_ctx =
-                  reinterpret_cast<libucontext_ucontext_t*> (&rtos::scheduler::current_thread_->context_.port_.ucontext);
+                  reinterpret_cast<os_impl_ucontext_t*> (&rtos::scheduler::current_thread_->context_.port_.ucontext);
 #pragma GCC diagnostic pop
             }
 
@@ -360,7 +360,7 @@ namespace os
                       old_thread->name (),
                       rtos::scheduler::current_thread_->name ());
 #endif
-                  if (libucontext_posix_swapcontext (old_ctx, new_ctx) != 0)
+                  if (os_impl_swapcontext (old_ctx, new_ctx) != 0)
                     {
                       trace::printf (
                           "port::scheduler::%s() swapcontext failed with %s\n",
@@ -376,7 +376,7 @@ namespace os
                                  rtos::scheduler::current_thread_->name ());
 #endif
                   // context->port_.saved = false;
-                  if (libucontext_posix_setcontext (new_ctx) != 0)
+                  if (os_impl_setcontext (new_ctx) != 0)
                     {
                       trace::printf (
                           "port::scheduler::%s() setcontext failed with %s\n",
