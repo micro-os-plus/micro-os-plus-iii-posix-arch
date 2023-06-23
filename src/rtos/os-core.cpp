@@ -390,7 +390,7 @@ namespace os
       static void
       systick_clock_signal_handler (int signum)
       {
-#if 1
+#if defined(OS_TRACE_RTOS_SYSCLOCK_TICK)
         trace::printf("{i ");
 #endif
 
@@ -412,7 +412,7 @@ namespace os
         // Call the ticks timer ISR.
         os_systick_handler ();
         signal_nesting--;
-#if 1
+#if defined(OS_TRACE_RTOS_SYSCLOCK_TICK)
         trace::printf(" i}");
 #endif
       }
