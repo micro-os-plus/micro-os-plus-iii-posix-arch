@@ -1,13 +1,13 @@
-![GitHub package.json version](https://img.shields.io/github/package-json/v/micro-os-plus/micro-os-plus-iii-posix-arch)](https://github.com/micro-os-plus/micro-os-plus-iii-posix-arch/blob/xpack/package.json)
+[![GitHub package.json version](https://img.shields.io/github/package-json/v/micro-os-plus/micro-os-plus-iii-posix-arch)](https://github.com/micro-os-plus/micro-os-plus-iii-posix-arch/blob/xpack/package.json)
 [![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/micro-os-plus/micro-os-plus-iii-posix-arch)](https://github.com/micro-os-plus/micro-os-plus-iii-posix-arch/tags/)
-[[![license](https://img.shields.io/github/license/micro-os-plus/micro-os-plus-iii-posix-arch)](https://github.com/micro-os-plus/micro-os-plus-iii-posix-arch/blob/xpack/LICENSE)
+[![license](https://img.shields.io/github/license/micro-os-plus/micro-os-plus-iii-posix-arch)](https://github.com/micro-os-plus/micro-os-plus-iii-posix-arch/blob/xpack/LICENSE)
 
 # A source code library with the µOS++ POSIX synthetic port
 
 This project provides support for running µOS++ on POSIX
 platforms like macOS and GNU/Linux.
 
-The project is hosted on GitHub as
+The open-source project is hosted on GitHub as
 [micro-os-plus/micro-os-plus-iii-posix-arch](https://github.com/micro-os-plus/micro-os-plus-iii-posix-arch).
 
 ## Maintainer info
@@ -20,15 +20,29 @@ For maintainer info, please see the
 
 ## Install
 
-As a source library xPack, the easiest way to add it to a project is via
-**xpm**, but it can also be used as any Git project, for example as a submodule.
+As a source code library, this project can be integrated into another project
+in the traditional way,
+by either copying the relevant files into the target project, or by linking
+the entire project as a Git submodule.
 
-### Prerequisites
+However, things can be further automated and the most convenient way is
+to **add it as a dependency** to the project via **xpm**.
+
+### Install with xpm/npm
+
+Along with the source files, this project also includes a
+`package.json` file with the metadata that allows it to be identified as an
+**xpm/npm** package so that it can be directly installed from GitHub.
+
+#### Prerequisites
 
 A recent [xpm](https://xpack.github.io/xpm/),
-which is a portable [Node.js](https://nodejs.org/) command line application.
+which is a portable [Node.js](https://nodejs.org/) command line application
+that complements [npm](https://docs.npmjs.com)
+with several extra features specific to
+**C/C++ projects**.
 
-It is recommended to update to the latest version with:
+It is recommended to install/update to the latest version with:
 
 ```sh
 npm install --global xpm@latest
@@ -37,10 +51,12 @@ npm install --global xpm@latest
 For details please follow the instructions in the
 [xPack install](https://xpack.github.io/install/) page.
 
-### xpm
+@warning
+Be sure **xpm** is not installed with administrative rights.
 
-This package is available as
-`@micro-os-plus/micro-os-plus-iii-posix-arch` from GitHub.
+#### xpm
+
+This project can be installed as a package from GitHub with:
 
 ```sh
 cd my-project
@@ -51,10 +67,21 @@ xpm install github:micro-os-plus/micro-os-plus-iii-posix-arch
 ls -l xpacks/@micro-os-plus/micro-os-plus-iii-posix-arch
 ```
 
-### Git submodule
+#### npm
 
-If, for any reason, **xpm** is not available, the next recommended
-solution is to link it as a Git submodule below an `xpacks` folder.
+The package can also be installed with [npm](https://docs.npmjs.com)
+or related, but
+the features specific to C/C++ projects will not be available;
+therefore, at least for consistency reasons, it is recommended
+to use **xpm**.
+
+### Add as Git submodule
+
+Besides manually copying the relevant files to the target
+project, which will later require extra maintenance efforts to keep the
+project up to date, a more convenient
+solution is to link the entire project as a **Git submodule**,
+for example below an `xpacks` folder:
 
 ```sh
 cd my-project
@@ -151,7 +178,7 @@ target_link_libraries(your-target PRIVATE
 
 ### Known problems
 
-The scheduler code does not run on Apple Silicon (SegFault).
+- none
 
 #### Limitations
 
@@ -160,25 +187,7 @@ runs in cooperative mode only.
 
 ### Tests
 
-The project is fully tested via GitHub
-[Actions](https://github.commicro-os-plus/micro-os-plus-iii-posix-arch/actions/)
-on each push.
-
-The test platforms are GNU/Linux, macOS and Windows; native tests are
-compiled with GCC and clang; tests for embedded platforms are compiled
-with arm-none-eabi-gcc and risc-none-elf-gcc, and executed via QEMU.
-
-There are two sets of tests, one that runs on every push, with a
-limited number of tests, and a set that is triggered manually,
-usually before releases, and runs all tests on all supported
-platforms.
-
-The full set can be run manually with the following commands:
-
-```sh
-xpm run install-all -C ~/Work/micro-os-plus/micro-os-plus-iii-posix-arch.git
-xpm run test-all -C ~/Work/micro-os-plus/micro-os-plus-iii-posix-arch.git
-```
+TBD
 
 ## Change log - incompatible changes
 
