@@ -53,11 +53,7 @@ No need to add a tag here, it'll be added when the release is created.
 
 ### Increase the version
 
-Determine the upstream version (like `1.0.0`)
-
-- <https://arm-software.github.io/CMSIS_5/RTOS/html/rtosValidation.html>
-
-Update the`package.json` file; add an extra digit in the
+Update the`package.json` file; add an extra field in the
 pre-release field, and initially also add `.pre`,
 for example `1.0.0-pre.1`.
 
@@ -69,10 +65,13 @@ Check GitHub issues and pull requests:
 
 and fix them; assign them to a milestone (like `1.0.0`).
 
-### Update `README-MAINTAINER.md`
+### Update the `README*.md`` files
 
-Update the `README-MAINTAINER.md` file to reflect the changes
-related to the new version.
+Update the following files to reflect the changes
+related to the new version:
+
+- `README-MAINTAINER.md`
+- `README.md`
 
 ### Update `CHANGELOG.md`
 

@@ -2,7 +2,7 @@
 [![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/micro-os-plus/micro-os-plus-iii-posix-arch)](https://github.com/micro-os-plus/micro-os-plus-iii-posix-arch/tags/)
 [![license](https://img.shields.io/github/license/micro-os-plus/micro-os-plus-iii-posix-arch)](https://github.com/micro-os-plus/micro-os-plus-iii-posix-arch/blob/xpack/LICENSE)
 
-# A source code library with the µOS++ POSIX synthetic port
+# An xpm/npm package with the µOS++ POSIX synthetic port
 
 This project provides support for running µOS++ on POSIX
 platforms like macOS and GNU/Linux.
@@ -51,8 +51,7 @@ npm install --global xpm@latest
 For details please follow the instructions in the
 [xPack install](https://xpack.github.io/install/) page.
 
-@warning
-Be sure **xpm** is not installed with administrative rights.
+Warning: Be sure **xpm** is not installed with administrative rights.
 
 #### xpm
 
@@ -62,7 +61,7 @@ This project can be installed as a package from GitHub with:
 cd my-project
 xpm init # Unless a package.json is already present
 
-xpm install github:micro-os-plus/micro-os-plus-iii-posix-arch
+xpm install github:micro-os-plus/micro-os-plus-iii-posix-arch#v1.0.0 --save-dev --copy
 
 ls -l xpacks/@micro-os-plus/micro-os-plus-iii-posix-arch
 ```
@@ -111,7 +110,12 @@ TBD
 
 ### Status
 
-The **micro-os-plus-iii-posix-arch** source library is fully functional.
+The **micro-os-plus-iii-posix-arch** source library is fully functional,
+but starting with mid 2023 it was marked as end-of-life and
+is not recommended for new designs.
+
+A new package will be available
+as part of µOS++ IVe.
 
 ### Build & integration info
 
