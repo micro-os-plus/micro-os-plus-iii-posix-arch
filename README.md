@@ -2,7 +2,7 @@
 [![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/micro-os-plus/micro-os-plus-iii-posix-arch)](https://github.com/micro-os-plus/micro-os-plus-iii-posix-arch/tags/)
 [![license](https://img.shields.io/github/license/micro-os-plus/micro-os-plus-iii-posix-arch)](https://github.com/micro-os-plus/micro-os-plus-iii-posix-arch/blob/xpack/LICENSE)
 
-# An xpm/npm package with the µOS++ POSIX synthetic port
+# A source code library with the µOS++ POSIX synthetic port (an xpm/npm package)
 
 This project provides support for running µOS++ on POSIX
 platforms like macOS and GNU/Linux.
@@ -106,7 +106,11 @@ into `xpack`.
 
 ## Developer info
 
-TBD
+### Overview
+
+The µOS++ IIIe source code is split between a portable part
+and platform specific code (like synthetic POSIX, this project).
+Applications must include both.
 
 ### Status
 
@@ -172,7 +176,7 @@ dependency with:
 ```cmake
 target_link_libraries(your-target PRIVATE
 
-  micro-os-plus::micro-os-plus-iii-posix-arch
+  micro-os-plus::iii-posix-arch
 )
 ```
 
@@ -184,7 +188,7 @@ target_link_libraries(your-target PRIVATE
 
 - none
 
-#### Limitations
+### Limitations
 
 When running on a synthetic POSIX platform, the µOS++ scheduler
 runs in cooperative mode only.
@@ -192,18 +196,6 @@ runs in cooperative mode only.
 ### Tests
 
 TBD
-
-## Change log - incompatible changes
-
-According to [semver](https://semver.org) rules:
-
-> Major version X (X.y.z | X > 0) MUST be incremented if any
-backwards incompatible changes are introduced to the public API.
-
-The incompatible changes, in reverse chronological order,
-are:
-
-- v1.x: the original code.
 
 ## License
 
