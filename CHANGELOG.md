@@ -6,6 +6,37 @@ Please check
 [GitHub](https://github.com/micro-os-plus/posix-arch/issues)
 and close existing issues and pull requests.
 
+## 2025-08-24
+
+* v1.0.1
+* 879d82e .gitignore remove test*
+* ed051de add .clang-format & re-format
+* c6758e7 update copyright notices
+
+## 2023-07-22
+
+* 4523e79 README updates
+
+## 2023-07-21
+
+* fd434d0 README updates
+* 0a6c645 README updates
+
+## 2023-07-18
+
+* f52c3f4 README update
+
+## 2023-07-14
+
+* 97434db README update
+* d964f19 README update
+* a5dd774 README updates
+* 20baca5 .npmignore scripts
+* 9068a7b 1.0.0
+* a99c394 .npmignore update
+* 2678362 prepare v1.0.0
+* 3f1abef cleanups, remove Eclipse files
+
 ## 2023-06-30
 
 * e802595 package.json: 1.0.0-pre.11
