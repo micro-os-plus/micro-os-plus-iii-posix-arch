@@ -32,7 +32,7 @@
 
 // ----------------------------------------------------------------------------
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 
 // ----------------------------------------------------------------------------
 
@@ -70,29 +70,25 @@ namespace os
       namespace scheduler
       {
 
-        inline port::scheduler::state_t
-        __attribute__((always_inline))
+        inline port::scheduler::state_t __attribute__ ((always_inline))
         lock (void)
         {
           return locked (state::locked);
         }
 
-        inline port::scheduler::state_t
-        __attribute__((always_inline))
+        inline port::scheduler::state_t __attribute__ ((always_inline))
         unlock (void)
         {
           return locked (state::unlocked);
         }
 
-        inline bool
-        __attribute__((always_inline))
+        inline bool __attribute__ ((always_inline))
         locked (void)
         {
           return lock_state != state::unlocked;
         }
 
-        inline void
-        __attribute__((always_inline))
+        inline void __attribute__ ((always_inline))
         wait_for_interrupt (void)
         {
 #if defined(OS_TRACE_RTOS_THREAD_CONTEXT)
@@ -106,15 +102,13 @@ namespace os
       namespace interrupts
       {
 
-        inline bool
-        __attribute__((always_inline))
+        inline bool __attribute__ ((always_inline))
         in_handler_mode (void)
         {
           return (signal_nesting > 0);
         }
 
-        inline bool
-        __attribute__((always_inline))
+        inline bool __attribute__ ((always_inline))
         is_priority_valid (void)
         {
           return true;
@@ -126,15 +120,14 @@ namespace os
 
       namespace this_thread
       {
-        inline void
-        __attribute__((always_inline))
+        inline void __attribute__ ((always_inline))
         prepare_suspend (void)
         {
         }
 
       } /* namespace this_thread */
 
-    // ========================================================================
+      // ======================================================================
 
     } /* namespace port */
   } /* namespace rtos */

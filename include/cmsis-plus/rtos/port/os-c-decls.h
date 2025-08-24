@@ -31,7 +31,7 @@
 
 #include <stdint.h>
 
-#if !defined (_XOPEN_SOURCE)
+#if !defined(_XOPEN_SOURCE)
 #error This port requires defining _XOPEN_SOURCE=600L or 700L globally
 #endif
 

@@ -44,17 +44,17 @@ namespace os
       void
       context::create (void* context, void* func, void* args)
       {
-        /* class */ rtos::thread::context* th_ctx =
-            static_cast</* class */rtos::thread::context*> (context);
-        memset (&th_ctx->port_, 0, sizeof(th_ctx->port_));
+        /* class */ rtos::thread::context* th_ctx
+            = static_cast</* class */ rtos::thread::context*> (context);
+        memset (&th_ctx->port_, 0, sizeof (th_ctx->port_));
 
 #pragma GCC diagnostic push
 #if defined(__clang__)
 #elif defined(__GNUC__)
 #pragma GCC diagnostic ignored "-Wuseless-cast"
 #endif
-        os_impl_ucontext_t* ctx =
-            reinterpret_cast<os_impl_ucontext_t*> (&(th_ctx->port_.ucontext));
+        os_impl_ucontext_t* ctx = reinterpret_cast<os_impl_ucontext_t*> (
+            &(th_ctx->port_.ucontext));
 #pragma GCC diagnostic pop
 
 #if defined(OS_TRACE_RTOS_THREAD_CONTEXT)
@@ -118,7 +118,7 @@ namespace os
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wsign-conversion"
-          return sigismember(&old, clock::signal_number);
+          return sigismember (&old, clock::signal_number);
 #pragma GCC diagnostic pop
         }
 
@@ -146,7 +146,7 @@ namespace os
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wsign-conversion"
-          return sigismember(&old, clock::signal_number);
+          return sigismember (&old, clock::signal_number);
 #pragma GCC diagnostic pop
         }
 
@@ -196,14 +196,14 @@ namespace os
           signal_nesting = 0;
 
           // Must be done before the first critical section.
-          sigemptyset(&interrupts::clock_set);
+          sigemptyset (&interrupts::clock_set);
 
 #pragma GCC diagnostic push
 #if defined(__clang__)
 #elif defined(__GNUC__)
 #pragma GCC diagnostic ignored "-Wsign-conversion"
 #endif
-          sigaddset(&interrupts::clock_set, clock::signal_number);
+          sigaddset (&interrupts::clock_set, clock::signal_number);
 #pragma GCC diagnostic pop
 
           return result::ok;
@@ -217,21 +217,22 @@ namespace os
         void
         start (void)
         {
-            {
-              rtos::interrupts::critical_section ics;
+          {
+            rtos::interrupts::critical_section ics;
 
-              // Determine the next thread.
-              rtos::scheduler::current_thread_ =
-                  rtos::scheduler::ready_threads_list_.unlink_head ();
-            }
+            // Determine the next thread.
+            rtos::scheduler::current_thread_
+                = rtos::scheduler::ready_threads_list_.unlink_head ();
+          }
 
 #pragma GCC diagnostic push
 #if defined(__clang__)
 #elif defined(__GNUC__)
 #pragma GCC diagnostic ignored "-Wuseless-cast"
 #endif
-          os_impl_ucontext_t* new_context =
-              reinterpret_cast<os_impl_ucontext_t*> (&(rtos::scheduler::current_thread_->context_.port_.ucontext));
+          os_impl_ucontext_t* new_context
+              = reinterpret_cast<os_impl_ucontext_t*> (&(
+                  rtos::scheduler::current_thread_->context_.port_.ucontext));
 #pragma GCC diagnostic pop
 
 #if defined(OS_TRACE_RTOS_THREAD_CONTEXT)
@@ -246,7 +247,7 @@ namespace os
           os_impl_setcontext (new_context);
 #else
           int res = os_impl_setcontext (new_context);
-          assert(res == 0);
+          assert (res == 0);
 #endif
           abort ();
         }
@@ -256,16 +257,16 @@ namespace os
         state_t
         locked (state_t state)
         {
-          os_assert_throw(!interrupts::in_handler_mode (), EPERM);
+          os_assert_throw (!interrupts::in_handler_mode (), EPERM);
 
           state_t tmp;
 
-            {
-              rtos::interrupts::critical_section ics;
+          {
+            rtos::interrupts::critical_section ics;
 
-              tmp = lock_state;
-              lock_state = state;
-            }
+            tmp = lock_state;
+            lock_state = state;
+          }
 
           return tmp;
         }
@@ -298,19 +299,19 @@ namespace os
           os_impl_ucontext_t* old_ctx;
           os_impl_ucontext_t* new_ctx;
 
-            {
-              rtos::interrupts::critical_section ics;
+          {
+            rtos::interrupts::critical_section ics;
 
-              old_thread = rtos::scheduler::current_thread_;
-              if ((old_thread->state_ == rtos::thread::state::running)
-                  || (old_thread->state_ == rtos::thread::state::suspended)
-                  || (old_thread->state_ == rtos::thread::state::ready))
-                {
-                  save = true;
-                }
+            old_thread = rtos::scheduler::current_thread_;
+            if ((old_thread->state_ == rtos::thread::state::running)
+                || (old_thread->state_ == rtos::thread::state::suspended)
+                || (old_thread->state_ == rtos::thread::state::ready))
+              {
+                save = true;
+              }
 #if defined(OS_TRACE_RTOS_THREAD_CONTEXT)
-              trace::printf ("port::scheduler::%s() from %s %d %d\n", __func__,
-                             old_thread->name (), old_thread->state_, save);
+            trace::printf ("port::scheduler::%s() from %s %d %d\n", __func__,
+                           old_thread->name (), old_thread->state_, save);
 #endif
 
 #pragma GCC diagnostic push
@@ -318,21 +319,21 @@ namespace os
 #elif defined(__GNUC__)
 #pragma GCC diagnostic ignored "-Wuseless-cast"
 #endif
-              old_ctx =
-                  reinterpret_cast<os_impl_ucontext_t*> (&old_thread->context_.port_.ucontext);
+            old_ctx = reinterpret_cast<os_impl_ucontext_t*> (
+                &old_thread->context_.port_.ucontext);
 #pragma GCC diagnostic pop
 
-              rtos::scheduler::internal_switch_threads ();
+            rtos::scheduler::internal_switch_threads ();
 
 #pragma GCC diagnostic push
 #if defined(__clang__)
 #elif defined(__GNUC__)
 #pragma GCC diagnostic ignored "-Wuseless-cast"
 #endif
-              new_ctx =
-                  reinterpret_cast<os_impl_ucontext_t*> (&rtos::scheduler::current_thread_->context_.port_.ucontext);
+            new_ctx = reinterpret_cast<os_impl_ucontext_t*> (
+                &rtos::scheduler::current_thread_->context_.port_.ucontext);
 #pragma GCC diagnostic pop
-            }
+          }
 
           if (old_ctx != new_ctx)
             {
@@ -340,8 +341,8 @@ namespace os
                 {
 #if defined(OS_TRACE_RTOS_THREAD_CONTEXT)
                   trace::printf (
-                      "port::scheduler::%s() swapcontext %s -> %s \n", __func__,
-                      old_thread->name (),
+                      "port::scheduler::%s() swapcontext %s -> %s \n",
+                      __func__, old_thread->name (),
                       rtos::scheduler::current_thread_->name ());
 #endif
                   if (os_impl_swapcontext (old_ctx, new_ctx) != 0)
@@ -380,7 +381,7 @@ namespace os
 
 #pragma GCC diagnostic pop
 
-      // ----------------------------------------------------------------------
+        // --------------------------------------------------------------------
 
       } /* namespace scheduler */
 
@@ -390,7 +391,7 @@ namespace os
       systick_clock_signal_handler (int signum)
       {
 #if defined(OS_TRACE_RTOS_SYSCLOCK_TICK)
-        trace::printf("{i ");
+        trace::printf ("{i ");
 #endif
 
         if (signum != clock::signal_number)
@@ -412,7 +413,7 @@ namespace os
         os_systick_handler ();
         signal_nesting--;
 #if defined(OS_TRACE_RTOS_SYSCLOCK_TICK)
-        trace::printf(" i}");
+        trace::printf (" i}");
 #endif
       }
 
@@ -435,7 +436,7 @@ namespace os
 #else
 #error Platform unsupported
 #endif
-        sigemptyset(&sa.sa_mask);
+        sigemptyset (&sa.sa_mask);
         sa.sa_flags = SA_RESTART;
 
         if (sigaction (clock::signal_number, &sa, nullptr) != 0)
@@ -449,9 +450,9 @@ namespace os
         /* struct */ itimerval tv;
         // first clear all fields
 #if defined(__APPLE__)
-        memset (&tv, 0, sizeof(tv));
+        memset (&tv, 0, sizeof (tv));
 #else
-        timerclear(&tv.it_value);
+        timerclear (&tv.it_value);
 #endif
         // then set the required ones
 
@@ -462,9 +463,11 @@ namespace os
         tv.it_interval.tv_usec = 1000000 / rtos::clock_systick::frequency_hz;
 #else
         tv.it_value.tv_sec = 1;
-        tv.it_value.tv_usec = 0; //1000000 / rtos::clock_systick::frequency_hz;
+        tv.it_value.tv_usec = 0; // 1000000 /
+                                 // rtos::clock_systick::frequency_hz;
         tv.it_interval.tv_sec = 1;
-        tv.it_interval.tv_usec = 0;//1000000 / rtos::clock_systick::frequency_hz;
+        tv.it_interval.tv_usec
+            = 0; // 1000000 / rtos::clock_systick::frequency_hz;
 #endif
 
         if (setitimer (ITIMER_REAL, &tv, nullptr) != 0)
@@ -488,7 +491,6 @@ namespace os
             write (1, &cn, 1);
           }
 #endif
-
       }
 
       // ======================================================================

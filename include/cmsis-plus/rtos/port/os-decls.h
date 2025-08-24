@@ -35,28 +35,32 @@
 #endif
 
 #if !defined(OS_INTEGER_RTOS_MIN_STACK_SIZE_BYTES)
-#define OS_INTEGER_RTOS_MIN_STACK_SIZE_BYTES (32*1024)
+#define OS_INTEGER_RTOS_MIN_STACK_SIZE_BYTES (32 * 1024)
 #endif
 
 #if !defined(OS_INTEGER_RTOS_DEFAULT_STACK_SIZE_BYTES)
 #if defined(__linux__)
-#define OS_INTEGER_RTOS_DEFAULT_STACK_SIZE_BYTES (2 * OS_INTEGER_RTOS_MIN_STACK_SIZE_BYTES)
+#define OS_INTEGER_RTOS_DEFAULT_STACK_SIZE_BYTES \
+  (2 * OS_INTEGER_RTOS_MIN_STACK_SIZE_BYTES)
 #else
-#define OS_INTEGER_RTOS_DEFAULT_STACK_SIZE_BYTES (OS_INTEGER_RTOS_MIN_STACK_SIZE_BYTES)
+#define OS_INTEGER_RTOS_DEFAULT_STACK_SIZE_BYTES \
+  (OS_INTEGER_RTOS_MIN_STACK_SIZE_BYTES)
 #endif /* defined(__linux__) */
 #endif
 
 #if !defined(OS_INTEGER_RTOS_MAIN_STACK_SIZE_BYTES)
-#define OS_INTEGER_RTOS_MAIN_STACK_SIZE_BYTES (OS_INTEGER_RTOS_DEFAULT_STACK_SIZE_BYTES)
+#define OS_INTEGER_RTOS_MAIN_STACK_SIZE_BYTES \
+  (OS_INTEGER_RTOS_DEFAULT_STACK_SIZE_BYTES)
 #endif
 
 #if !defined(OS_INTEGER_RTOS_IDLE_STACK_SIZE_BYTES)
-#define OS_INTEGER_RTOS_IDLE_STACK_SIZE_BYTES (OS_INTEGER_RTOS_DEFAULT_STACK_SIZE_BYTES)
+#define OS_INTEGER_RTOS_IDLE_STACK_SIZE_BYTES \
+  (OS_INTEGER_RTOS_DEFAULT_STACK_SIZE_BYTES)
 #endif
 
 // ----------------------------------------------------------------------------
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 
 // ----------------------------------------------------------------------------
 
@@ -94,12 +98,12 @@ namespace os
         using allocation_element_t = os_port_thread_stack_allocation_element_t;
 
         // Initial value for the minimum stack size in bytes.
-        constexpr std::size_t min_size_bytes =
-        OS_INTEGER_RTOS_MIN_STACK_SIZE_BYTES;
+        constexpr std::size_t min_size_bytes
+            = OS_INTEGER_RTOS_MIN_STACK_SIZE_BYTES;
 
         // Initial value for the default stack size in bytes.
-        constexpr std::size_t default_size_bytes =
-        OS_INTEGER_RTOS_DEFAULT_STACK_SIZE_BYTES;
+        constexpr std::size_t default_size_bytes
+            = OS_INTEGER_RTOS_DEFAULT_STACK_SIZE_BYTES;
 
         constexpr element_t magic = 0xEFBEADDEEFBEADDE;
       } /* namespace stack */
@@ -139,13 +143,13 @@ namespace os
       } /* namespace clock */
 
       using thread_context_t = struct thread_context_s
-        {
-          // On POSIX, the context is saved on standard (although deprecated)
-          // ucontext_t structures. It requires _XOPEN_SOURCE=700L to compile.
-          os_impl_ucontext_t ucontext;//
-        };
+      {
+        // On POSIX, the context is saved on standard (although deprecated)
+        // ucontext_t structures. It requires _XOPEN_SOURCE=700L to compile.
+        os_impl_ucontext_t ucontext; //
+      };
 
-    // ------------------------------------------------------------------------
+      // ----------------------------------------------------------------------
 
     } /* namespace port */
   } /* namespace rtos */
