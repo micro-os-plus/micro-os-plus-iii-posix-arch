@@ -5,7 +5,6 @@ Thumbs.db
 build/
 Debug/
 Release/
-test*/
 *.tgz
 node_modules/
 xpacks/
