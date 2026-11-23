@@ -222,9 +222,15 @@ namespace os
           {
             rtos::interrupts::critical_section ics;
 
-            // Determine the next thread.
+            // Determine the next thread (unlink_head() also marks it as
+            // running).
             rtos::scheduler::current_thread_
                 = rtos::scheduler::ready_threads_list_.unlink_head ();
+
+            // As the context switch does for the next threads, and as
+            // the Cortex-M port does; the statistics and the switch
+            // timestamp are reset by the core before calling the port.
+            instrumentation::thread::active (rtos::scheduler::current_thread_);
           }
 
 #pragma GCC diagnostic push
