@@ -70,6 +70,15 @@ namespace os
         // The context in itself is not needed, but makecontext()
         // requires a context obtained by getcontext().
 
+        // getcontext() also saves the signal mask, which setcontext() and
+        // swapcontext() restore, so a thread created while the clock
+        // signal is blocked (in an interrupts critical section) would run
+        // with it blocked forever. Start every thread with the clock
+        // signal enabled, as Cortex-M threads start with interrupts
+        // enabled; the other signals keep the creator's mask.
+        sigdelset (&ctx->os_impl_uc_sigmask,
+                   static_cast<int> (clock::signal_number));
+
         // Remove the parent link.
         // TODO: maybe use this to link to exit code.
         ctx->uc_link = nullptr;

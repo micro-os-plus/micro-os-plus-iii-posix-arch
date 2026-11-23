@@ -40,6 +40,8 @@
 #define os_impl_makecontext libucontext_makecontext
 #define os_impl_setcontext libucontext_posix_setcontext
 #define os_impl_swapcontext libucontext_posix_swapcontext
+// The signal mask saved in the context.
+#define os_impl_uc_sigmask uc_sigmask_posix
 
 #else
 
@@ -57,6 +59,8 @@
 #define os_impl_makecontext makecontext
 #define os_impl_setcontext setcontext
 #define os_impl_swapcontext swapcontext
+// The signal mask saved in the context.
+#define os_impl_uc_sigmask uc_sigmask
 
 #endif // defined(OS_INCLUDE_LIBUCONTEXT)
 
