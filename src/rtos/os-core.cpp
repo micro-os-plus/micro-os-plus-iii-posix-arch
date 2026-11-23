@@ -84,6 +84,9 @@ namespace os
         trace::printf ("port::context::%s() makecontext %p\n", __func__, ctx);
 #endif
 
+        // POSIX defines the extra arguments as int; libucontext (on all
+        // its architectures) and glibc read them as register-width
+        // values, so the thread pointer can be passed directly.
 #pragma GCC diagnostic push
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wc++98-compat-pedantic"

@@ -31,10 +31,6 @@
 
 #include <stdint.h>
 
-#if !defined(_XOPEN_SOURCE)
-#error This port requires defining _XOPEN_SOURCE=600L or 700L globally
-#endif
-
 #if defined(OS_INCLUDE_LIBUCONTEXT)
 
 #include <libucontext/libucontext.h>
@@ -46,6 +42,13 @@
 #define os_impl_swapcontext libucontext_posix_swapcontext
 
 #else
+
+// The system ucontext functions are deprecated by POSIX and require
+// the X/Open definitions.
+#if !defined(_XOPEN_SOURCE)
+#error \
+    "The system ucontext requires _XOPEN_SOURCE=600L or 700L; alternatively use libucontext (OS_INCLUDE_LIBUCONTEXT)."
+#endif
 
 #include <ucontext.h>
 
