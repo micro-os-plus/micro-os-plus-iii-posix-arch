@@ -475,6 +475,13 @@ namespace os
             abort ();
           }
 
+        // SIGALRM does not queue: when the signal is delayed (host
+        // scheduling, timer coalescing on an idle macOS host), the
+        // expirations are merged and the delayed ticks are lost, so
+        // sysclock runs slower than real time. Not compensated, by
+        // decision: each signal processes exactly one tick, as a real
+        // tick interrupt does (see the README Limitations).
+
         // The tick period in microseconds (rounded down when the
         // frequency does not divide 1 MHz); setitimer() requires tv_usec
         // below 1000000, and a zero period would disarm the timer.

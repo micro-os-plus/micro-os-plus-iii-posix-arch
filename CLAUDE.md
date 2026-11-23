@@ -61,8 +61,13 @@ The function signatures being implemented are declared in the core repo, in
   interface (the CMSIS RTOS validator increments it in its `SIGUSR1`
   handler), so keep its name and type.
 - **SysTick**: `setitimer(ITIMER_REAL)` at `OS_INTEGER_SYSTICK_FREQUENCY_HZ`
-  (default 1000); the handler calls `os_systick_handler()`.
-- **High-res clock**: `gettimeofday()`, fixed 1 MHz.
+  (default 1000); the handler calls `os_systick_handler()` once per signal.
+  SIGALRM does not queue, so delayed ticks are lost (about 8% on an idle
+  macOS host, timer coalescing; none measured on GNU/Linux); by decision
+  they are not compensated (documented in the README Limitations).
+- **High-res clock**: `clock_gettime(CLOCK_MONOTONIC)`, fixed 1 MHz; the
+  per tick deltas are `uint32_t` (core contract), longer gaps are carried
+  over to the next ticks.
 - **Stacks**: 64-bit elements; min 32 KiB, default doubled on Linux.
 - **Startup**: execution starts in normal `main()`; static constructor order
   is unspecified, so registries must rely on BSS zero-init and not clear

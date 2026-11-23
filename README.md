@@ -221,9 +221,15 @@ The port runs µOS++ as a plain process, with the RTOS threads as
 - the signal handlers run on the stack of the interrupted thread, so
   each thread stack must also have room for a signal frame (the
   minimum stack size is 32 KiB);
-- the timing is that of a host process: when the process is not
-  scheduled in time, ticks can be lost, so timeouts in ticks can last
-  longer than requested.
+- the timing is that of a host process: the system tick is the
+  `SIGALRM` signal, which does not queue, so when it is delayed (by the
+  host scheduling or, on macOS, by timer coalescing on an idle host)
+  the delayed ticks are lost, and `sysclock`, the tick based timeouts
+  and timers, and `rtclock` (derived from the tick) run slower than
+  real time; about 8% slower was measured on an idle macOS host, no
+  loss on GNU/Linux or on a busy macOS host; `hrclock` follows real
+  time. The lost ticks are not compensated, so each signal processes
+  exactly one tick, as a real tick interrupt does.
 
 ### Tests
 
