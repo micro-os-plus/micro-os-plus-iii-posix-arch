@@ -101,7 +101,23 @@ namespace os
 #if defined(OS_TRACE_RTOS_THREAD_CONTEXT)
           trace::printf ("%s() \n", __func__);
 #endif
-          pause ();
+          // A signal handler may make a thread ready at any time, but
+          // cannot switch to it (the port is cooperative); the idle
+          // thread does it after this function returns. Check for ready
+          // threads with all signals blocked and wait with sigsuspend(),
+          // which unblocks them and waits atomically, so a thread made
+          // ready just before the wait does not have to wait for the
+          // next signal.
+          sigset_t all;
+          sigset_t old;
+          sigfillset (&all);
+          sigprocmask (SIG_BLOCK, &all, &old);
+          if (rtos::scheduler::ready_threads_list_.empty ())
+            {
+              // Returns after a signal handler ran (EINTR).
+              sigsuspend (&old);
+            }
+          sigprocmask (SIG_SETMASK, &old, nullptr);
         }
 
       } /* namespace scheduler */
