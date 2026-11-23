@@ -277,6 +277,15 @@ namespace os
         reschedule (void)
         {
           if (rtos::scheduler::locked ()
+              && !rtos::interrupts::in_handler_mode ())
+            {
+              // Remember the request; the core performs it when the
+              // scheduler is unlocked.
+              os::rtos::scheduler::is_reschedule_pending = true;
+              return;
+            }
+
+          if (rtos::scheduler::locked ()
               || rtos::interrupts::in_handler_mode ())
             {
 #if defined(OS_TRACE_RTOS_THREAD_CONTEXT)
@@ -301,6 +310,9 @@ namespace os
 
           {
             rtos::interrupts::critical_section ics;
+
+            // Any deferred request is performed now.
+            os::rtos::scheduler::is_reschedule_pending = false;
 
             old_thread = rtos::scheduler::current_thread_;
             if ((old_thread->state_ == rtos::thread::state::running)
