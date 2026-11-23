@@ -57,6 +57,12 @@
 
 // ----------------------------------------------------------------------------
 
+// The interrupt (signal handler) nesting level; in_handler_mode() is
+// true while it is not zero. Part of the port interface: code that
+// simulates other interrupts with signals must increment it around its
+// handlers, as the SIGALRM handler does (for example the CMSIS RTOS
+// validator, with SIGUSR1). Changed only in signal handlers; uint32_t
+// loads and stores are atomic on the supported hosts.
 extern "C" uint32_t signal_nesting;
 
 namespace os

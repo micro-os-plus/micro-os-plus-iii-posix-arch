@@ -415,19 +415,9 @@ namespace os
         trace::printf ("{i ");
 #endif
 
-        if (signum != clock::signal_number)
-          {
-            char ce = '?';
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-result"
-
-            write (1, &ce, 1);
-
-#pragma GCC diagnostic pop
-
-            return;
-          }
+        // Installed only for the clock signal.
+        assert (signum == static_cast<int> (clock::signal_number));
+        (void)signum;
 
         signal_nesting++;
         // Call the ticks timer ISR.
