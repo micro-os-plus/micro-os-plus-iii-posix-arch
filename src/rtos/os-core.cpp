@@ -467,29 +467,19 @@ namespace os
             abort ();
           }
 
-        // set timer
-        /* struct */ itimerval tv;
-        // first clear all fields
-#if defined(__APPLE__)
-        memset (&tv, 0, sizeof (tv));
-#else
-        timerclear (&tv.it_value);
-#endif
-        // then set the required ones
+        // The tick period in microseconds (rounded down when the
+        // frequency does not divide 1 MHz); setitimer() requires tv_usec
+        // below 1000000, and a zero period would disarm the timer.
+        static_assert (rtos::clock_systick::frequency_hz > 0
+                           && rtos::clock_systick::frequency_hz <= 1000000,
+                       "OS_INTEGER_SYSTICK_FREQUENCY_HZ must be 1 to 1000000");
+        constexpr uint32_t period_us
+            = 1000000 / rtos::clock_systick::frequency_hz;
 
-#if 1
-        tv.it_value.tv_sec = 0;
-        tv.it_value.tv_usec = 1000000 / rtos::clock_systick::frequency_hz;
-        tv.it_interval.tv_sec = 0;
-        tv.it_interval.tv_usec = 1000000 / rtos::clock_systick::frequency_hz;
-#else
-        tv.it_value.tv_sec = 1;
-        tv.it_value.tv_usec = 0; // 1000000 /
-                                 // rtos::clock_systick::frequency_hz;
-        tv.it_interval.tv_sec = 1;
-        tv.it_interval.tv_usec
-            = 0; // 1000000 / rtos::clock_systick::frequency_hz;
-#endif
+        /* struct */ itimerval tv{};
+        tv.it_value.tv_sec = period_us / 1000000;
+        tv.it_value.tv_usec = period_us % 1000000;
+        tv.it_interval = tv.it_value;
 
         if (setitimer (ITIMER_REAL, &tv, nullptr) != 0)
           {
@@ -497,21 +487,6 @@ namespace os
                            __func__);
             abort ();
           }
-
-#if 0
-        // Used for initial debugging, to see the signals arriving
-        pause ();
-        for (int i = 50; i > 0; --i)
-          {
-            for (int j = 100; j > 0; --j)
-              {
-                char c = '.';
-                write (1, &c, 1);
-              }
-            char cn = '\n';
-            write (1, &cn, 1);
-          }
-#endif
       }
 
       // ======================================================================
