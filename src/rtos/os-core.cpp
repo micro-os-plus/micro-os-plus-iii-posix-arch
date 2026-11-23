@@ -18,6 +18,7 @@
 #include <cmsis-plus/rtos/os.h>
 
 #include <sys/time.h>
+#include <time.h>
 
 // ----------------------------------------------------------------------------
 
@@ -498,18 +499,33 @@ namespace os
 
       // ======================================================================
 
+      // The time of the previous tick, in microseconds, as accounted
+      // by the core (see cycles_per_tick()).
       static uint64_t previous_timestamp;
 
+      // The microseconds since an unspecified start, from the monotonic
+      // clock, which is not affected by changes of the system time.
       static uint64_t
-      get_current_micros (void);
-
-      uint64_t
       get_current_micros (void)
       {
-        /* struct */ timeval tp;
-        gettimeofday (&tp, nullptr);
+        /* struct */ timespec ts;
+        clock_gettime (CLOCK_MONOTONIC, &ts);
 
-        return static_cast<uint64_t> (tp.tv_sec * 1000000 + tp.tv_usec);
+        return static_cast<uint64_t> (ts.tv_sec) * 1000000u
+               + static_cast<uint64_t> (ts.tv_nsec) / 1000u;
+      }
+
+      // The core adds the uint32_t per tick deltas to its count; a longer
+      // gap (the process stopped by a debugger, the host asleep) is
+      // returned in parts over the next ticks, so no time is lost and
+      // hrclock stays monotonic.
+      static uint32_t
+      micros_since_previous (void)
+      {
+        uint64_t delta = get_current_micros () - previous_timestamp;
+
+        return (delta > UINT32_MAX) ? UINT32_MAX
+                                    : static_cast<uint32_t> (delta);
       }
 
       void
@@ -521,18 +537,16 @@ namespace os
       uint32_t
       clock_highres::input_clock_frequency_hz (void)
       {
-        // The posix system clock resolution is 1 us, so it makes no
-        // sense to assume a frequency higher than 1 MHz.
+        // The monotonic clock is read in microseconds; a higher frequency
+        // would change the meaning of the hrclock values.
         return 1000000;
       }
 
       uint32_t
       clock_highres::cycles_per_tick (void)
       {
-        uint64_t ts = get_current_micros ();
-        uint32_t delta = static_cast<uint32_t> (ts - previous_timestamp);
-
-        previous_timestamp = ts;
+        uint32_t delta = micros_since_previous ();
+        previous_timestamp += delta;
 
         return delta;
       }
@@ -540,10 +554,7 @@ namespace os
       uint32_t
       clock_highres::cycles_since_tick (void)
       {
-        uint64_t ts = get_current_micros ();
-        uint32_t delta = static_cast<uint32_t> (ts - previous_timestamp);
-
-        return delta;
+        return micros_since_previous ();
       }
 
     } /* namespace port */
