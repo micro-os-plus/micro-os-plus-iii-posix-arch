@@ -13,10 +13,11 @@
  * This file is part of the CMSIS++ proposal, intended as a CMSIS
  * replacement for C++ applications.
  *
- * If contains the scheduler implementation that uses
- * functions from the POSIX API (macOS and GNU/Linux).
+ * It contains the POSIX (macOS and GNU/Linux) inline implementations
+ * of the `os::rtos::port` functions (scheduler lock, wait for
+ * interrupt, handler mode).
  *
- * This file is included in all src/os-*.cpp files.
+ * It is included at the end of `cmsis-plus/rtos/os.h`.
  */
 
 #ifndef CMSIS_PLUS_RTOS_PORT_OS_INLINES_H_

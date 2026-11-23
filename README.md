@@ -118,20 +118,20 @@ Applications must include both.
 
 ### Status
 
-The **micro-os-plus-iii-posix-arch** source library is fully functional,
-but starting with mid 2023 it was marked as end-of-life and
-is not recommended for new designs.
+The **micro-os-plus-iii-posix-arch** source library is fully functional
+on macOS and GNU/Linux.
 
-A new package will be available
-as part of µOS++ IVe.
+Note: The next edition of the project (IVe) is currently work in progress,
+with the monolithic
+repository to be split into multiple separate source code libraries.
 
 ### Build & integration info
 
 The project is written in C/C++ and it is expected
 to be used in C and C++ projects.
 
-The source code was compiled with GCC 11, clang 12, clang 13
-arm-none-eabi-gcc 11, and should be warning free.
+The source code was compiled with GCC 11-14 and clang 13-19 (on macOS
+and GNU/Linux), and should be warning free.
 
 To ease the integration of this package into user projects, there
 are already made CMake configuration files (see below).
@@ -153,7 +153,12 @@ The source files to be added to the build are:
 
 #### Preprocessor definitions
 
-- `_XOPEN_SOURCE=700L`
+- `OS_INCLUDE_LIBUCONTEXT`, to use the context functions from
+  [libucontext](https://github.com/xpack-3rd-party/libucontext-xpack)
+  (recommended; this is what the tests use); usually defined in
+  `<cmsis-plus/os-app-config.h>`;
+- otherwise, `_XOPEN_SOURCE=700L` (or `600L`), required by the system
+  `<ucontext.h>` (deprecated by POSIX; this configuration is not tested).
 
 #### Compiler options
 
@@ -162,7 +167,10 @@ The source files to be added to the build are:
 
 #### Dependencies
 
-- none
+- the µOS++ IIIe portable part, `@micro-os-plus/micro-os-plus-iii`
+  (the CMake target `micro-os-plus::iii`);
+- with `OS_INCLUDE_LIBUCONTEXT`, `@xpack-3rd-party/libucontext`
+  (the CMake target `xpack-3rd-party::libucontext`).
 
 #### CMake
 
@@ -171,7 +179,7 @@ into a CMake application,
 add this folder to the build:
 
 ```cmake
-add_subdirectory("xpacks/@micro-os-plus/micro-os-plus-iii-posix-arch")`
+add_subdirectory("xpacks/@micro-os-plus/micro-os-plus-iii-posix-arch")
 ```
 
 The result is an interface library that can be added as an application
@@ -194,12 +202,37 @@ target_link_libraries(your-target PRIVATE
 
 ### Limitations
 
-When running on a synthetic POSIX platform, the µOS++ scheduler
-runs in cooperative mode only.
+The port runs µOS++ as a plain process, with the RTOS threads as
+`ucontext` contexts and the interrupts simulated with signals:
+
+- the scheduler is cooperative (non-preemptive): a thread made ready
+  by an interrupt (for example by the system tick) runs when the
+  running thread next calls the RTOS (yields, waits, or releases a
+  resource);
+- the system tick is the `SIGALRM` signal (`setitimer()`); the tick
+  processing, the timer callbacks and any other code called from
+  interrupts run inside a signal handler, so they may call only
+  async-signal-safe functions (not, for example, `printf()` or
+  `malloc()`; see
+  [micro-os-plus-iii#139](https://github.com/micro-os-plus/micro-os-plus-iii/issues/139));
+- code that simulates other interrupts with signals must increment
+  `signal_nesting` around its handlers, so that the RTOS sees them in
+  handler mode (as the CMSIS RTOS validator does with `SIGUSR1`);
+- the signal handlers run on the stack of the interrupted thread, so
+  each thread stack must also have room for a signal frame (the
+  minimum stack size is 32 KiB);
+- the timing is that of a host process: when the process is not
+  scheduled in time, ticks can be lost, so timeouts in ticks can last
+  longer than requested.
 
 ### Tests
 
-TBD
+The port is tested with the tests of the portable part
+(`micro-os-plus-iii`, in the `tests` folder, the `native` platform),
+with GCC and clang, on macOS and GNU/Linux.
+
+The `tests/trace-stdout` and `tests/trace-stderr` folders contain small
+trace programs, not built by the tests.
 
 ## License
 

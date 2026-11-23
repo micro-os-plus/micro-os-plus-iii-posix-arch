@@ -16,7 +16,6 @@
 #include <cassert>
 
 #include <cmsis-plus/rtos/os.h>
-#include <cmsis-plus/rtos/port/os-inlines.h>
 
 #include <sys/time.h>
 

@@ -14,15 +14,16 @@ macOS and GNU/Linux. The portable kernel lives in the sibling repo
 must link both. Other ports with the same shape are
 `../micro-os-plus-iii-cortexm.git`, `-riscv`, `-aarch32`, `-aarch64`.
 
-Status: functional but end-of-life since mid-2023 (superseded by µOS++ IVe);
-expect maintenance-only changes.
+Status: fully functional on macOS and GNU/Linux; the next edition (IVe) is
+work in progress.
 
 ## Layout
 
 - `include/cmsis-plus/rtos/port/` — headers the core includes by fixed path:
   - `os-c-decls.h` — C-compatible types (`os_port_*_t`), pulled in by core
     `cmsis-plus/rtos/os-c-decls.h`. Selects `ucontext` vs `libucontext`
-    via `os_impl_*` macros. Errors out if `_XOPEN_SOURCE` is not defined.
+    via `os_impl_*` macros (`OS_INCLUDE_LIBUCONTEXT`). With the system
+    ucontext, errors out if `_XOPEN_SOURCE` is not defined.
   - `os-decls.h` — C++ `os::rtos::port` namespace: stack sizes/magic,
     `interrupts`, `scheduler` lock state, `clock::signal_number`
     (`SIGALRM`), `thread_context_t`. Also defines `OS_INTEGER_*` defaults.
@@ -31,7 +32,7 @@ expect maintenance-only changes.
     `cmsis-plus/rtos/os.h`.
 - `src/rtos/os-core.cpp` — the actual port implementation.
 - `src/diag/trace-posix.cpp` — `os::trace::write()` backend.
-- `test/` — tiny trace smoke-test `main.cpp` files; no build scripts here.
+- `tests/` — tiny trace smoke-test `main.cpp` files; not built by anything.
 - `CMakeLists.txt` — INTERFACE library `micro-os-plus::iii-posix-arch`
   (include dir + the two sources; no defines/options of its own).
 
@@ -45,7 +46,9 @@ The function signatures being implemented are declared in the core repo, in
   (deprecated POSIX, hence `-Wdeprecated-declarations` suppressions).
   `context::create()` builds a ucontext on the thread's µOS++ stack.
   With `OS_INCLUDE_LIBUCONTEXT` the `libucontext_*` equivalents are used
-  (the native test platform links `xpack-3rd-party::libucontext`).
+  (the native test platform links `xpack-3rd-party::libucontext`, and the
+  test applications define `OS_INCLUDE_LIBUCONTEXT` in their
+  `os-app-config.h`, so the system ucontext path is not tested).
 - **`scheduler::reschedule()`** must keep the save and restore calls in the
   same function body; do not refactor into helpers/inlines (the comment in the
   code explains why). It uses `swapcontext` when the old thread must be
@@ -54,7 +57,9 @@ The function signatures being implemented are declared in the core repo, in
   never happen from the signal handler.
 - **"Interrupts"** = the `SIGALRM` signal. Critical sections block/unblock
   it with `sigprocmask` on `interrupts::clock_set`. `signal_nesting` (global,
-  `extern "C"`) tracks handler mode.
+  `extern "C"`, `uint32_t`) tracks handler mode; it is part of the port
+  interface (the CMSIS RTOS validator increments it in its `SIGUSR1`
+  handler), so keep its name and type.
 - **SysTick**: `setitimer(ITIMER_REAL)` at `OS_INTEGER_SYSTICK_FREQUENCY_HZ`
   (default 1000); the handler calls `os_systick_handler()`.
 - **High-res clock**: `gettimeofday()`, fixed 1 MHz.
@@ -104,11 +109,13 @@ rather than global flags.
 
 - Work on `xpack-development`; `xpack` is the stable branch (merged on
   release). `master` is unused.
-- Release flow is in `README-MAINTAINER.md`: bump `package.json`, update
-  `README*.md` (install snippet carries the version tag) and `CHANGELOG.md`
-  (entries are dated `## YYYY-MM-DD` with `* <hash> <subject>` lines),
-  commit "prepare vX.Y.Z", then `npm version X.Y.Z` (postversion pushes
-  branches and tags).
-- `.npmignore` excludes `test*/`, `scripts`, `README-*`, `NOTES.md`; check
-  `npm pack` output when adding files.
-- `NOTES.md` has developer notes (limitations, debugging with CodeLLDB).
+- Release flow is in `maintenance/docs/README-MAINTAINER.md`: bump
+  `package.json`, update `README*.md` (install snippet carries the version
+  tag) and `CHANGELOG.md` (entries are dated `## YYYY-MM-DD` with
+  `* <hash> <subject>` lines), commit "prepare vX.Y.Z", then
+  `npm version X.Y.Z` (postversion pushes branches and tags).
+- `.npmignore` excludes `test*/`, `scripts`, `README-*`, `NOTES.md`,
+  `.claude/`, `CLAUDE.md` and `maintenance/`; check `npm pack` output when
+  adding files.
+- `maintenance/docs/NOTES.md` has developer notes (limitations, debugging
+  with CodeLLDB).

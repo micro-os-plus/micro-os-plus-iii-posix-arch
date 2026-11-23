@@ -13,8 +13,9 @@
  * This file is part of the CMSIS++ proposal, intended as a CMSIS
  * replacement for C++ applications.
  *
- * It is included in `cmsis-plus/rtos/os.h` to customise
- * it with POSIX specific declarations.
+ * It is included in `cmsis-plus/rtos/os-decls.h` and
+ * `cmsis-plus/rtos/os-c-decls.h` to customise them with
+ * POSIX specific declarations.
  */
 
 #ifndef CMSIS_PLUS_RTOS_PORT_OS_DECLS_H_
@@ -64,8 +65,8 @@
 
 // ----------------------------------------------------------------------------
 
+// sigset_t, the clock signal.
 #include <signal.h>
-// Platform definitions
 #include <sys/time.h>
 
 #include <cstdint>
