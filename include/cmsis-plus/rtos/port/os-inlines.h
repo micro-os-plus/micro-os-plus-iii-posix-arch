@@ -137,6 +137,12 @@ namespace os
           return true;
         }
 
+        // The main stack is the host process stack; no hardware limit.
+        inline void __attribute__ ((always_inline))
+        set_stack_limit (const void* bottom __attribute__ ((unused)))
+        {
+        }
+
       } /* namespace interrupts */
 
       // ======================================================================
