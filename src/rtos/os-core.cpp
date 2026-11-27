@@ -24,6 +24,9 @@
 
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wc++98-compat"
+#if (__clang_major__ >= 20)
+#pragma clang diagnostic ignored "-Wunsafe-buffer-usage-in-libc-call"
+#endif // (__clang_major__ >= 20)
 #endif
 
 // ----------------------------------------------------------------------------
@@ -46,6 +49,7 @@ namespace os
       {
         /* class */ rtos::thread::context* th_ctx
             = static_cast</* class */ rtos::thread::context*> (context);
+        // #pragma clang diagnostic ignored "-Wunsafe-buffer-usage-in-libc-call"
         memset (&th_ctx->port_, 0, sizeof (th_ctx->port_));
 
 #pragma GCC diagnostic push
@@ -63,6 +67,7 @@ namespace os
 
         if (os_impl_getcontext (ctx) != 0)
           {
+            // #pragma clang diagnostic ignored "-Wunsafe-buffer-usage-in-libc-call"
             trace::printf ("port::context::%s() getcontext failed with %s\n",
                            __func__, strerror (errno));
             abort ();
@@ -191,6 +196,7 @@ namespace os
           /* struct */ utsname name;
           if (::uname (&name) != -1)
             {
+              // #pragma clang diagnostic ignored "-Wunsafe-buffer-usage-in-libc-call"
               trace::printf ("POSIX synthetic, running on %s %s %s",
                              name.machine, name.sysname, name.release);
             }
@@ -386,6 +392,7 @@ namespace os
 #endif
                   if (os_impl_swapcontext (old_ctx, new_ctx) != 0)
                     {
+                      // #pragma clang diagnostic ignored "-Wunsafe-buffer-usage-in-libc-call"
                       trace::printf (
                           "port::scheduler::%s() swapcontext failed with %s\n",
                           __func__, strerror (errno));
@@ -402,6 +409,7 @@ namespace os
                   // context->port_.saved = false;
                   if (os_impl_setcontext (new_ctx) != 0)
                     {
+                      // #pragma clang diagnostic ignored "-Wunsafe-buffer-usage-in-libc-call"
                       trace::printf (
                           "port::scheduler::%s() setcontext failed with %s\n",
                           __func__, strerror (errno));
