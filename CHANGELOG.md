@@ -6,9 +6,46 @@ Please check
 [GitHub](https://github.com/micro-os-plus/posix-arch/issues)
 and close existing issues and pull requests.
 
+## 2026-11-27
+
+* v1.1.0
+* 48655ea os-core.cpp: silence the clang 20 warning
+
+## 2026-11-25
+
+* 682e383 os-inlines.h: add the empty set_stack_limit()
+
+## 2026-11-24
+
+* c9c081c CODE-REVIEW-1.md: code review of the POSIX port
+* ee557c8 README.md, CLAUDE.md, os-core.cpp: document the lost ticks
+* e21e63d os-inlines.h: wait for interrupts with sigsuspend() (#6)
+* fb05566 os-core.cpp: hrclock from CLOCK_MONOTONIC (#5)
+* d677edb os-core.cpp: new threads start with the clock signal enabled (#4)
+
+## 2026-11-23
+
+* 3802953 os-core.cpp: instrumentation event for the first thread
+* 3788112 README.md, CLAUDE.md, port headers: update the documentation
+* 17db682 os-c-decls.h: require _XOPEN_SOURCE only for the system ucontext
+* b8be14d os-inlines.h, os-core.cpp: document signal_nesting
+* df0207f os-core.cpp: setitimer() period in seconds and microseconds (#3)
+* 1b4b204 .npmignore: exclude CLAUDE.md, .claude/ and maintenance/
+* 9220598 os-core.cpp: no reschedule before the scheduler is started
+* 32ed2fa os-core.cpp: record a reschedule requested while locked
+* 5ef0ad5 rename tests
+* 93394dd add maintenance
+
+## 2026-10-01
+
+* 49282e6 add docs/preemption plan
+* 44f3ca7 add copilot & claude files
+
 ## 2025-08-24
 
-* v1.0.1
+* 86a6a1f 1.0.1
+* 405bde4 rename xpack-development
+* 937c920 prepare v1.0.1
 * 879d82e .gitignore remove test*
 * ed051de add .clang-format & re-format
 * c6758e7 update copyright notices
